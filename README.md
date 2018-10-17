@@ -13,8 +13,8 @@ This repository contains ...
 ## Getting started
 All code was written in Python Version 3.x, .... . Requirements are listed in requirements.txt. To get started use:
 
-	git clone https://github.com/JulianMar11/steeringattack
-    cd steeringattack/
+	git clone https://github.com/50sven/ISE
+    cd ISE
     pip install -r requirements.txt
     
 Further instructions ... 
@@ -33,7 +33,7 @@ The repository is structured in the following way:
 
 The MIT License ([MIT](http://opensource.org/licenses/mit-license.php))
 
-Copyright (c) 2018 Matthias Bitzer, Paul Schindler, Sven Mueller, Julian Marstaller
+Copyright (c) 2018 "Names of contributors"
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
