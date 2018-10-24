@@ -96,6 +96,9 @@ Pipfile.lock
 .spyderproject
 .spyproject
 
+# Intellij IDE
+.idea
+
 # Rope project settings
 .ropeproject
 
