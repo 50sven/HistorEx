@@ -26,7 +26,7 @@ The repository is structured in the following way:
 
 # Contributors
 
-[Daniela Kaun](https://github.com/"dakaun"), [Michael Brunzel](https://github.com/"michael-brunzel"), [Sven Mueller](https://github.com/50sven)
+[Daniela Kaun](https://github.com/dakaun), [Michael Brunzel](https://github.com/michael-brunzel), [Sven Mueller](https://github.com/50sven)
 
 
 # License
