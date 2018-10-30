@@ -109,4 +109,5 @@ Pipfile.lock
 .mypy_cache/
 
 # data folder
-.data
+.data/
+data/
