@@ -40,14 +40,12 @@ for url in soup_1.find_all('a', attrs={'class' : 'aResultsHeader'}):
     link_snippet = url.get('href')
     
     download_link = "http://www.perseus.tufts.edu/hopper/dl"+link_snippet
-    doc_name = "book"+ str(i)#re.sub("[^A-Za-z0-9]+", " ", url.text)
+    doc_name = "book"+ str(i)
     
     with open(doc_name+".xml", 'wb') as file:
         file.write (requests.get(download_link).content)
         
-    #soup_doc = BeautifulSoup(doc_name+".xml", 'lxml')
     
-    #list_with_soups.append(soup_doc)
     list_with_links.append(download_link)
     list_with_file_names.append(doc_name)
     
