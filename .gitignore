@@ -111,3 +111,6 @@ Pipfile.lock
 # data folder
 .data/
 data/
+
+# constants
+CONSTANTS.py
