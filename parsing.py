@@ -3,7 +3,7 @@ import re
 
 
 def get_meta_data(soup):
-    """Extract meta data from a soup
+    """Extract meta data from a .xml file soup
     """
     # title statement contains title and author
     # sourcDesc often contains publishing date
@@ -118,11 +118,11 @@ if __name__ == "__main__":
 
     files = glob.glob('data/books_xml/*')
 
-    # for idx, file in enumerate(files):
-    #     print(f"Processing: {files[idx]}")
-    #     x = xml_to_text(file, "data/test.txt", return_text=False)
-    #     break
+    for idx, file in enumerate(files):
+        print(f"Processing: {files[idx]}")
+        book_number = re.findall("\d+", file)[0]
+        x = xml_to_text(file, f"data/books_content/book{num}.txt", return_text=False)
 
-    random_file = np.random.choice(files)
-    print("Processing:", random_file)
-    x = xml_to_text(random_file, "data/test.txt", return_text=False)
+    # random_file = np.random.choice(files)
+    # print("Processing:", random_file)
+    # x = xml_to_text(random_file, "data/test.txt", return_text=False)
