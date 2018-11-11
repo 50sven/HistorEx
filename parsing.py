@@ -67,7 +67,7 @@ def get_meta_data(soup):
     return title, author, date
 
 
-def xml_to_text(file, path, return_text=False):
+def xml_to_text(file, path, return_text=False, windows_OS=True):
     """Extract meta information and text body from an .xml file
 
     Args:
@@ -78,7 +78,12 @@ def xml_to_text(file, path, return_text=False):
     Returns:
         text (string): return the extracted meta information and text body
     """
-    with open(file) as f:
+    with open(file, "rb") as f:
+        
+        if(windows_OS):
+            f = f.read()
+            f = f.decode('utf-8', 'ignore').encode('latin-1', 'ignore').decode('utf-8', 'ignore')
+            
         soup = BeautifulSoup(f, "html.parser")
 
     with open(path, "w") as t:
@@ -113,15 +118,17 @@ def xml_to_text(file, path, return_text=False):
 
 if __name__ == "__main__":
 
+    
     import glob
     import numpy as np
 
-    files = glob.glob('data/books_xml/*')
+    files = glob.glob('/Books/*')
 
     for idx, file in enumerate(files):
         print(f"Processing: {files[idx]}")
         book_number = re.findall("\d+", file)[0]
-        x = xml_to_text(file, f"data/books_content/book{num}.txt", return_text=False)
+        x = xml_to_text(file, f"/Raw_Texts/book{book_number}.txt",
+                        return_text=False,windows_OS=True)
 
     # random_file = np.random.choice(files)
     # print("Processing:", random_file)
