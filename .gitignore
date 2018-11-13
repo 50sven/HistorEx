@@ -114,3 +114,6 @@ data/
 
 # constants
 CONSTANTS.py
+
+#graphs
+graphs/

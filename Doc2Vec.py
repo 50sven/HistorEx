@@ -12,6 +12,7 @@ import tensorflow as tf
 import nltk
 import re
 import os
+import random
 from nltk.corpus import stopwords
 from scipy.sparse import *
 from scipy import *
@@ -19,6 +20,7 @@ from nltk.stem import WordNetLemmatizer
 from nltk.stem import PorterStemmer
 from collections import Counter
 from sklearn.metrics.pairwise import cosine_similarity
+from CONSTANTS import *
 
 """
 Manual Implementation of the doc2vec-Model 
@@ -58,17 +60,9 @@ def remove_unnecessary_chars (text_string):
     raw_text_string = raw_text_string.replace('\\n', " ")
     raw_text_string = raw_text_string.replace('\\r', " ")
     
-    raw_text_string = re.sub("\d", " ", raw_text_string)
-    raw_text_string = re.sub("[<>=?@(),$%*.#`':;]", " ", raw_text_string)
-    raw_text_string = re.sub("\[", " ", raw_text_string)
-    raw_text_string = re.sub("\]", " ", raw_text_string)
-    raw_text_string = re.sub("\s+", " ", raw_text_string)
-    raw_text_string = re.sub(r"\\", " ", raw_text_string)
-    raw_text_string = re.sub("[-]", "", raw_text_string)
-    raw_text_string = re.sub("[+]", " ", raw_text_string)
-    raw_text_string = re.sub("[/]", " ", raw_text_string)
-    #raw_text_string = re.sub(r"\b\w\b", " ", raw_text_string)
     raw_text_string = re.sub("[^a-zA-Z]+", " ", raw_text_string)
+    raw_text_string = re.sub(r"\b\w\b", " ", raw_text_string)
+    raw_text_string = re.sub("\s+", " ", raw_text_string)
 
     return raw_text_string
 
@@ -135,11 +129,20 @@ def pre_training_preparation(token_doc_tuple, num_of_docs, half_context_size, nu
     sample_of_freq_words = [most_frequent_tokens[np.random.choice(100,num_of_samples, replace=False)[i]] for i in range(num_of_samples)] 
     freq_word_indices = [dict_of_tokens[i] for i in sample_of_freq_words]
     
-    return num_of_docs, ((2*half_context_size)+1), dict_of_tokens, doc_context_indices_array, label_indices_array, freq_word_indices
+    inputs_labels = list(zip(doc_context_indices_array, label_indices_array))
+    random.shuffle(inputs_labels)
+    doc_context_indices_array, label_indices_array = zip(*inputs_labels)
+    
+    return num_of_docs, ((2*half_context_size)+1), dict_of_tokens, np.asarray(doc_context_indices_array), np.asarray(label_indices_array), freq_word_indices
 
 
 ####
-    
+  
+"""
+die Inputs am besten vor dem Training oder einmal pro Epoche shuffeln
+"""    
+
+
 #### Build the neural net ####
 
 def train_neural_net(num_of_docs, context_window,dict_of_tokens,
@@ -261,26 +264,32 @@ if __name__=="__main__":
         
         
     ##### Pre-Processing + Training of the Neural Net #####
+    
+    # Parameters #
+    half_context_size=4
+    num_of_samples=16
+    num_of_freq_words=3000
+    #
         
-    path_to_docs = "C:/Users/Michael/Documents/KIT/Information_Service_Engineering/Raw_Texts2"
-    
-    
+    path_to_docs = PATH_CONTENT
     texts = convert_docs_to_string(path_to_docs=path_to_docs, open_mode="rb", combine_docs=False)
-    prepped_texts = [remove_unnecessary_chars(i) for i in texts]
     
+    prepped_texts = [remove_unnecessary_chars(i) for i in texts]
     raw_token_collection = [further_pre_processing(processed_text_string=i, lemmatization=True) for i in prepped_texts]
     
     
-    token_doc_tuple, num_of_docs, num_of_freq_words = select_most_freq_words(raw_token_collection, num_of_freq_words=3000)
-    num_of_docs, context_window, dict_of_tokens, doc_context_indices_array, label_indices_array, freq_word_indices = pre_training_preparation(token_doc_tuple=token_doc_tuple, num_of_docs=num_of_docs, half_context_size=2, num_of_samples=16, num_of_freq_words=num_of_freq_words)
+    token_doc_tuple, num_of_docs, num_of_freq_words = select_most_freq_words(raw_token_collection, num_of_freq_words=num_of_freq_words)
+    num_of_docs, context_window, dict_of_tokens, doc_context_indices_array, label_indices_array, freq_word_indices = pre_training_preparation(token_doc_tuple=token_doc_tuple, num_of_docs=num_of_docs,
+                                                                                                                                              half_context_size=half_context_size, num_of_samples=num_of_samples,
+                                                                                                                                              num_of_freq_words=num_of_freq_words)
+
     
-    
+    # Hyperparameters #
     embedding_size = 100                    
     num_sampled= 64
     num_of_epochs = 100
-    batch_size = 512
-    overall_loss = 0    
-        
+    batch_size = 512    
+    #   
     
     final_embeddings = train_neural_net(num_of_docs=num_of_docs, context_window=context_window,dict_of_tokens=dict_of_tokens,
                                         doc_context_indices_array=doc_context_indices_array,
@@ -290,6 +299,6 @@ if __name__=="__main__":
     
     # Compare different docs and words (via cosine_similarity)
     
-    return_the_closest_words(word="valley", embeddings=final_embeddings, dictionary=dict_of_tokens, num_of_close_words=10)
+    #return_the_closest_words(word="valley", embeddings=final_embeddings, dictionary=dict_of_tokens, num_of_close_words=10)
 
 ################################################################

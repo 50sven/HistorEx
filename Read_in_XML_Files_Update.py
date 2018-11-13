@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import urllib
 import os
 import requests
+from CONSTANTS import *
 
 
 def create_start_soup(http_link):
@@ -53,13 +54,8 @@ if __name__ == "__main__":
     main_soup = create_start_soup("http://www.perseus.tufts.edu/hopper/collection?collection=Perseus:collection:cwar")
 
     # Download the books to directory(adjust to your system) --> Only necessary once!!! (otherwise comment the line out)
-    # download_links = download_books(main_soup, "C:/Users/Michael/Documents/KIT/Information_Service_Engineering/Books_new")
+    #download_links = download_books(main_soup, PATH_XML)
     ##
 
-    title_names = get_only_book_titles(main_soup)
+    #title_names = get_only_book_titles(main_soup)
 
-    # Save und reload the names -------------> Adjust the Paths #
-    # import pickle
-    # pickle.dump(title_names, open('C:/Users/Michael/Documents/KIT/Information_Service_Engineering/Book_Titles/Book_Titles.pkl', 'wb'))
-    # title_Names = pickle.load(open('C:/Users/Michael/Documents/KIT/Information_Service_Engineering/Book_Titles/Book_Titles.pkl', 'rb'))
-    # #

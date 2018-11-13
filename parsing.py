@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 import re
+from CONSTANTS import *
 
 
 def get_meta_data(soup):
@@ -121,13 +122,14 @@ if __name__ == "__main__":
     
     import glob
     import numpy as np
-
-    files = glob.glob('/Books/*')
-
+    
+    
+    files = glob.glob(PATH_XML+'/*')
+    
     for idx, file in enumerate(files):
         print(f"Processing: {files[idx]}")
         book_number = re.findall("\d+", file)[0]
-        x = xml_to_text(file, f"/Raw_Texts/book{book_number}.txt",
+        x = xml_to_text(file, PATH_RAW_TEXT+f"/book{book_number}.txt",
                         return_text=False,windows_OS=True)
 
     # random_file = np.random.choice(files)
