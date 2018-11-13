@@ -271,7 +271,7 @@ if __name__=="__main__":
     num_of_freq_words=3000
     #
         
-    path_to_docs = PATH_CONTENT
+    path_to_docs = ("/content/ISE/all_books/")          #PATH_CONTENT
     texts = convert_docs_to_string(path_to_docs=path_to_docs, open_mode="rb", combine_docs=False)
     
     prepped_texts = [remove_unnecessary_chars(i) for i in texts]
@@ -299,6 +299,6 @@ if __name__=="__main__":
     
     # Compare different docs and words (via cosine_similarity)
     
-    #return_the_closest_words(word="valley", embeddings=final_embeddings, dictionary=dict_of_tokens, num_of_close_words=10)
+    #return_the_closest_words(word="hour", embeddings=final_embeddings, dictionary=dict_of_tokens, num_of_close_words=10)
 
 ################################################################
