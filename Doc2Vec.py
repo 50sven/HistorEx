@@ -20,7 +20,7 @@ from nltk.stem import WordNetLemmatizer
 from nltk.stem import PorterStemmer
 from collections import Counter
 from sklearn.metrics.pairwise import cosine_similarity
-#from CONSTANTS import *
+
 
 """
 Manual Implementation of the doc2vec-Model 
