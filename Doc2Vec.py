@@ -271,7 +271,7 @@ if __name__=="__main__":
     num_of_freq_words=3000
     #
         
-    path_to_docs = ("/content/ISE/all_books/")          #PATH_CONTENT
+    path_to_docs = "/content/ISE/all_books/"          #PATH_CONTENT
     texts = convert_docs_to_string(path_to_docs=path_to_docs, open_mode="rb", combine_docs=False)
     
     prepped_texts = [remove_unnecessary_chars(i) for i in texts]
