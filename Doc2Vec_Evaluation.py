@@ -31,7 +31,7 @@ and returns a specified number of nearest docs/words to the given doc/word accor
 def return_the_closest_words_or_docs(word_doc, path_to_docs, embeddings, new_dict, dict_for_update, num_of_close_words, docs_only):
     
     if (new_dict is None): #  if this condition is true, the docs have to be added to the dictionary
-        new_dict = [("doc_"+ str(i), i) for i in range(num_of_docs)] 
+        
         files_in_directory_sorted = natsort.natsorted(os.listdir(path_to_docs))
         docs_sorted = [(re.sub(".txt", "", i), str(index)) for index, i in enumerate(files_in_directory_sorted)]
         new_dict = {key: value for (key, value) in docs_sorted} 
