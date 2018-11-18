@@ -13,6 +13,8 @@ import nltk
 import re
 import os
 import random
+import natsort
+import pickle
 from nltk.corpus import stopwords
 from scipy.sparse import *
 from scipy import *
@@ -20,7 +22,7 @@ from nltk.stem import WordNetLemmatizer
 from nltk.stem import PorterStemmer
 from collections import Counter
 from sklearn.metrics.pairwise import cosine_similarity
-
+from CONSTANTS import *
 
 """
 Manual Implementation of the doc2vec-Model 
@@ -34,9 +36,10 @@ def convert_docs_to_string(path_to_docs, open_mode, combine_docs):
     
     text_data = []
     directory_name = path_to_docs
-    files_in_directory = os.listdir(path_to_docs)
+    files_in_directory_sorted = natsort.natsorted(os.listdir(path_to_docs))
     
-    for value in files_in_directory:
+    
+    for value in files_in_directory_sorted:
         file_name= directory_name+"/"+value
         data = open(file_name, open_mode) #, encoding=encoding_type)
         data_string = data.read()
@@ -46,9 +49,9 @@ def convert_docs_to_string(path_to_docs, open_mode, combine_docs):
     if (combine_docs ==True):    
         whole_string_big = " ".join(text_data)
     else :
-        return text_data
+        return text_data, files_in_directory_sorted
     
-    return whole_string_big
+    return  whole_string_big
 
 
 ####
@@ -107,7 +110,7 @@ def select_most_freq_words (list_of_prep_token, num_of_freq_words):
 
 def pre_training_preparation(token_doc_tuple, num_of_docs, half_context_size, num_of_samples, num_of_freq_words):
 
-
+    token_doc_tuple = [i for i in token_doc_tuple if type(i) ==tuple] # Only use tuples (non-tuple implies an error)
     only_tokens , doc_ids = zip(*token_doc_tuple) # separate in doc-id's and tokens 
     
     unique_tokens = set(only_tokens) # Set of unique words across all documents 
@@ -133,7 +136,7 @@ def pre_training_preparation(token_doc_tuple, num_of_docs, half_context_size, nu
     random.shuffle(inputs_labels)
     doc_context_indices_array, label_indices_array = zip(*inputs_labels)
     
-    return num_of_docs, ((2*half_context_size)+1), dict_of_tokens, np.asarray(doc_context_indices_array), np.asarray(label_indices_array), freq_word_indices
+    return num_of_docs, ((2*half_context_size)+1), dict_of_tokens, np.asarray(doc_context_indices_array), np.asarray(label_indices_array), freq_word_indices, unique_tokens
 
 
 ####
@@ -246,7 +249,7 @@ def train_neural_net(num_of_docs, context_window,dict_of_tokens,
 
 def return_the_closest_words(word, embeddings, dictionary, num_of_close_words):
     
-    new_dict = [("doc_"+ str(i), i) for i in range(num_of_docs)]
+    new_dict = [("doc_"+ str(i), i) for i in range(num_of_docs)] # noch anpassen (nicht einfach die docs chronologisch hochzählen)
     new_dict = {key: value for (key, value) in new_dict} 
     new_dict.update(dictionary)
     
@@ -266,23 +269,43 @@ if __name__=="__main__":
     ##### Pre-Processing + Training of the Neural Net #####
     
     # Parameters #
-    half_context_size=4
+    half_context_size=3
     num_of_samples=16
-    num_of_freq_words=3000
+    num_of_freq_words=10000 # Noise kann auch selbst ein Wort sein....
     #
         
-    path_to_docs = "/content/ISE/all_books/"          #PATH_CONTENT
-    texts = convert_docs_to_string(path_to_docs=path_to_docs, open_mode="rb", combine_docs=False)
+    path_to_docs = "C:/Users/Michael/Documents/KIT/Information_Service_Engineering/all_books" #PATH_CONTENT
+    
+    texts, sorted_list = convert_docs_to_string(path_to_docs=path_to_docs, open_mode="rb", combine_docs=False)
     
     prepped_texts = [remove_unnecessary_chars(i) for i in texts]
     raw_token_collection = [further_pre_processing(processed_text_string=i, lemmatization=True) for i in prepped_texts]
     
+    #pickle.dump(raw_token_collection, open(f'C:/Users/Michael/Documents/KIT/Information_Service_Engineering/raw_tokens.pkl', 'wb'))
+    #raw_token_collection = pickle.load(open(f'C:/Users/Michael/Documents/KIT/Information_Service_Engineering/raw_tokens.pkl', 'rb'))
+    
+    
+    
+    #overall_length = [len(raw_token_collection[i]) for i in range(308)]
+    #sum(overall_length)
+    #test, test2 =zip(*token_doc_tuple[33749278])# die Länge der Tokens ist 33749279 (also -1 für den letzten Index= 33749278)
     
     token_doc_tuple, num_of_docs, num_of_freq_words = select_most_freq_words(raw_token_collection, num_of_freq_words=num_of_freq_words)
-    num_of_docs, context_window, dict_of_tokens, doc_context_indices_array, label_indices_array, freq_word_indices = pre_training_preparation(token_doc_tuple=token_doc_tuple, num_of_docs=num_of_docs,
+    
+    
+    #prep_list = (token_doc_tuple, num_of_docs, num_of_freq_words)
+    #pickle.dump(prep_list, open(f'C:/Users/Michael/Documents/KIT/Information_Service_Engineering/prep_list.pkl', 'wb'))
+    #token_doc_tuple, num_of_docs, num_of_freq_words = pickle.load(open(f'C:/Users/Michael/Documents/KIT/Information_Service_Engineering/prep_list.pkl', 'rb'))
+    
+    
+    num_of_docs, context_window, dict_of_tokens, doc_context_indices_array, label_indices_array, freq_word_indices, unique_tokens = pre_training_preparation(token_doc_tuple=token_doc_tuple, num_of_docs=num_of_docs,
                                                                                                                                               half_context_size=half_context_size, num_of_samples=num_of_samples,
                                                                                                                                               num_of_freq_words=num_of_freq_words)
 
+    final_input_list = (num_of_docs, context_window, dict_of_tokens, doc_context_indices_array, label_indices_array, freq_word_indices, unique_tokens)
+    pickle.dump(final_input_list, open(f'C:/Users/Michael/Documents/KIT/Information_Service_Engineering/final_input_list.pkl', 'wb'))
+    num_of_docs, context_window, dict_of_tokens, doc_context_indices_array, label_indices_array, freq_word_indices, unique_tokens = pickle.load(open(f'C:/Users/Michael/Documents/KIT/Information_Service_Engineering/final_input_list.pkl', 'rb'))
+    
     
     # Hyperparameters #
     embedding_size = 100                    
