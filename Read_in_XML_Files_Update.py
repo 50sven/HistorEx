@@ -57,5 +57,4 @@ if __name__ == "__main__":
     #download_links = download_books(main_soup, PATH_XML)
     ##
 
-    #title_names = get_only_book_titles(main_soup)
-
+    title_names = get_only_book_titles(main_soup)
