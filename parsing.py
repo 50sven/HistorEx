@@ -14,27 +14,28 @@ def get_meta_data(soup):
     author = ""
     date = 0
 
-    # Look for all title snippets and concatenate them
-    for idx, t in enumerate(titleStmt.find_all("title")):
-        if idx == 0:
-            title += t.text
-        else:
-            title += ", " + t.text
-
-    # Look for author(s)
-    for idx, a in enumerate(titleStmt.find_all("author")):
-        if idx == 0:
-            author += a.text
-        else:
-            author += "; " + a.text
-
-    # Look for editor(s)
-    if not author:
-        for idx, e in enumerate(titleStmt.find_all("editor")):
+    if titleStmt:
+        # Look for all title snippets and concatenate them
+        for idx, t in enumerate(titleStmt.find_all("title")):
             if idx == 0:
-                author += e.text
+                title += t.text
             else:
-                author += "; " + e.text
+                title += ", " + t.text
+
+        # Look for author(s)
+        for idx, a in enumerate(titleStmt.find_all("author")):
+            if idx == 0:
+                author += a.text
+            else:
+                author += "; " + a.text
+
+        # Look for editor(s)
+        if not author:
+            for idx, e in enumerate(titleStmt.find_all("editor")):
+                if idx == 0:
+                    author += e.text
+                else:
+                    author += "; " + e.text
 
     # Look for society name
     if not author:
@@ -55,7 +56,8 @@ def get_meta_data(soup):
         pass
     if not date:
         publicationStmt = soup.find("publicationstmt")
-        date = re.findall(r'\d{4}', publicationStmt.text)[-1]
+        if publicationStmt:
+            date = re.findall(r'\d{4}', publicationStmt.text)[-1]
 
     # Adapt results
     if not title:
@@ -128,7 +130,7 @@ if __name__ == "__main__":
     
     for idx, file in enumerate(files):
         print(f"Processing: {files[idx]}")
-        book_number = re.findall("\d+", file)[0]
+        book_number = re.findall("\d+", file)[1]
         x = xml_to_text(file, PATH_RAW_TEXT+f"/book{book_number}.txt",
                         return_text=False,windows_OS=True)
 
