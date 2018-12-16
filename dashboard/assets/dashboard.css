@@ -1,3 +1,10 @@
+:root {
+    --blue_color: #002C77;
+    --red_color: #B22234;
+    --white_color: white;
+    --font_family: "Soria", "Times New Roman", Times, serif;
+}
+
 @font-face {
     font-family: "Soria";
     src: url('/assets/soria-font-webfont.woff') format('woff'),
@@ -11,9 +18,9 @@ html {
     display: table;
     margin: auto;
     color: black;
-    font-family: "Soria", "Times New Roman", Times, serif;
+    font-family: var(--font_family);
     font-weight: bold;
-    width: 60%;
+    width: 1200px;
     height: 100%;
     background-image: linear-gradient(rgba(255,255,255,0.3),
     rgba(255,255,255,0.3)),
@@ -27,7 +34,7 @@ body {
     height: 100%;
 }
 
-#body1 {
+#page-content {
 }
 
 *{
@@ -42,18 +49,19 @@ body {
     background-image: url("flag.png");
     background-size: 100% 100%;
     display: grid;
-    grid-template-columns: 40% 60% ;
-    height: 400px;
+    grid-template-columns: 40% 10% 50% ;
+    height: 550px;
     grid-template-rows: 53.75% 46.25%;
     grid-template-areas:
-        "title subtitle"
-        "button button";
-    text-shadow: 0 0 20px #ffffff;
+        "title subtitle subtitle"
+        "button1 button1 button2";
+    text-shadow: -3px 3px 20px #ffffff;
 }
 
 #title {
     grid-area: title;
     display: grid;
+    font-size: 420%;
     grid-template-rows: 50% 50%;
     grid-template-areas:
         "title1"
@@ -65,25 +73,24 @@ body {
 }
 
 #title1 {
-    font-size: 600%;
     grid-area: title1;
     position: absolute;
-    top: 11%;
-    left: 3%;
+    top: 9%;
+    left: 2%;
 }
 
 #title2 {
-    font-size: 600%;
     grid-area: title2;
     position: absolute;
-    right: 3%;
-    bottom: -15%;
+    right: 2.5%;
+    bottom: -19%;
 }
 
 
 #subtitle {
     grid-area: subtitle;
     display: grid;
+    font-size: 175%;
     grid-template-rows: 50% 50%;
     grid-template-areas:
         "subtitle1"
@@ -100,7 +107,6 @@ body {
 }
 
 #st1box, #st2box {
-    font-size: 135%;
     position: relative;
     display:flex;
     align-items: center;
@@ -109,48 +115,53 @@ body {
 
 #subtitle1 {
     position: absolute;
-    bottom: 2.5%;
+    bottom: 3.5%;
 }
 
 #subtitle2 {
     position: absolute;
-    top: 12%;
+    top: 13.5%;
 }
 
-
-
-#SliderBlock {
-    display: grid;
-    grid-template-areas:
-    "label slider";
-    grid-template-columns: 30% 70%;
-    height: 50px;
-    background-color: #ffffff;
-    border-bottom: solid;
-    border-top: solid;
-    border-width: 15px;
-    border-color: #002C77;
+#btn1box {
+    grid-area: button1;
+    position: relative;
+    left: 20%;
+    top: 25%;
+    width: 60%;
+    height: 50%;
 }
 
-#sliderLabel {
-    grid-area: label;
-    font-size: 105%;
-    display: flex;
-    align-items: center;
-    align-content: center;
-    padding-right: 2%;
-    padding-left: 3%;
-    padding-top: 1%;
+#btn2box {
+    grid-area: button2;
+    position: relative;
+    right: -20%;
+    top: 25%;
+    width: 60%;
+    height: 50%;
 }
 
-#slider {
-    grid-area: slider;
-    padding-left: 2%;
-    padding-right: 3%;
-    padding-top: 2%;
+#btn1, #btn2 {
+    width: 100%;
+    height: 100%;
+    font-size: 250%;
+    background-color: var(--white_color);
+    font-family: var(--font_family);
+    font-weight: bold;
+    color: var(--red_color);
+    border: solid;
+    border-color: var(--blue_color);
+    border-radius: 3px;
 }
 
-
+#btn1:hover,
+#btn2:hover,
+#btn1:target,
+#btn2:target {
+    background-color: var(--blue_color);
+    color: white;
+    text-shadow: 0 0 10px #ffffff;
+}
 
 
 
@@ -160,9 +171,12 @@ body {
     url("battle.jpg");
     background-size: cover;
     background-repeat: no-repeat;
+    border-top: solid;
+    border-width: 15px;
+    border-color: var(--blue_color);
     padding: 1%;
     display: grid;
-    height: 750px;
+    height: 1000px;
     grid-template-columns: 50% 50%;
     grid-template-rows: 10% 40% 50%;
     grid-template-areas:
@@ -178,7 +192,7 @@ body {
 }
 
 
-#leftPie {
+#leftBar {
     grid-area: pie;
     padding-top: 0.5%;
     padding-right: 0.5%;
@@ -186,8 +200,8 @@ body {
 
 #tableHeadline {
     grid-area: theadline;
-    color: #B22234;
-    font-size: 175%;
+    color: var(--red_color);
+    font-size: 180%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -198,8 +212,8 @@ body {
 #table {
     grid-area: table;
     border: solid;
-    border-color: #B22234;
-    text-shadow: 0 0 5px #ffffff;
+    border-color: var(--red_color);
+    border-radius: 3px;
 }
 
 th:nth-child(1), td:nth-child(1) {
@@ -212,6 +226,7 @@ th:nth-child(2), td:nth-child(3) {
 
 th:nth-child(3), td:nth-child(3) {
     width: 10%;
+    text-align: center;
   }
 
 table {
@@ -223,14 +238,14 @@ table {
 }
 
 table thead {
-    font-size: 130%;
+    font-size: 175%;
     text-align: left;
     flex: 0 0 auto;
     width: calc(100% - 0.75vw);
 }
 
 table tbody {
-    font-size: 90%;
+    font-size: 120%;
     flex: 1 1 auto;
     display: block;
     overflow-y: scroll;
@@ -245,22 +260,23 @@ table thead, table tbody tr {
 }
 
 th, td {
-    border-bottom: 1px solid #002C77;
+    border-bottom: 1px solid var(--blue_color);
 }
 
-tbody tr:hover, thead:hover {
-    background-color: #B22234;
-    text-shadow: 0 0 5px #ffffff;
+tbody tr:hover {
+    /* background-color: var(--red_color);
+    text-shadow: 0 0 5px #ffffff; */
+    background-color: var(--blue_color);
+    color: white;
 }
 
 #MapBlock {
     display: block;
     width: 100%;
     background-color: #ffffff;
-    border-bottom: solid;
     border-top: solid;
     border-width: 15px;
-    border-color: #002C77;
+    border-color: var(--blue_color);
 }
 
 #MapGraph {
