@@ -36,15 +36,16 @@ death_counter = 0
 birthplace_counter = 0
 gender_counter = 0
 occupation_counter = 0
+image_counter = 0
 
 for author in df['Author']:
     # add wikidata identifier
     if ';' in author:
         author = author.split(';')[0]
     #  https://query.wikidata.org/#SELECT%20distinct%20%3FitemLabel%20%3FitemDescription%20%3Fcountry%20%0A%3Fdate_birth%20%3Fdate_death%20%3Fbirth_place%20%3Fgender%20%3Foccupation%0AWHERE%20%0A%7B%0A%20%20%3FitemLabel%20%3Flabel%20%27John%20G.%20B.%20Adams%27%40en.%0A%20%20%3FitemLabel%20wdt%3AP31%20wd%3AQ5%20.%0A%20%20OPTIONAL%20%7B%20%3FitemLabel%20wdt%3AP21%20%3Fgender%20.%7D%0A%20%20OPTIONAL%20%7B%20%3FitemLabel%20wdt%3AP27%20%3Fcountry%20.%7D%0A%20%20OPTIONAL%20%7B%20%3FitemLabel%20wdt%3AP569%20%3Fdate_birth%20.%7D%0A%20%20OPTIONAL%20%7B%20%3FitemLabel%20wdt%3AP570%20%3Fdate_death%20.%7D%0A%20%20OPTIONAL%20%7B%20%3FitemLabel%20wdt%3AP19%20%3Fbirth_place%20.%7D%0A%20%20OPTIONAL%20%7B%20%3FitemLabel%20wdt%3AP106%20%3Foccupation%20.%7D%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%0A%09%09bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%0A%09%7D%0A%20%20%7D
-    #  https://query.wikidata.org/#SELECT%20distinct%20%3Fitem%20%3FitemLabel%20%3FitemDescription%20%3FcountryLabel%20%0A%3Fdate_birth%20%3Fdate_death%20%3Fbirth_placeLabel%20%3FgenderLabel%20%3FoccupationLabel%0AWHERE%20%0A%7B%0A%20%20%3Fitem%20%3Flabel%20%27Elizabeth%20Cary%20Agassiz%27%40en.%0A%20%20%3Fitem%20wdt%3AP31%20wd%3AQ5%20.%0A%20%20OPTIONAL%20%7B%20%3Fitem%20wdt%3AP21%20%3Fgender%20.%7D%0A%20%20OPTIONAL%20%7B%20%3Fitem%20wdt%3AP27%20%3Fcountry%20.%7D%0A%20%20OPTIONAL%20%7B%20%3Fitem%20wdt%3AP569%20%3Fdate_birth%20.%7D%0A%20%20OPTIONAL%20%7B%20%3Fitem%20wdt%3AP570%20%3Fdate_death%20.%7D%0A%20%20OPTIONAL%20%7B%20%3Fitem%20wdt%3AP19%20%3Fbirth_place%20.%7D%0A%20%20OPTIONAL%20%7B%20%3Fitem%20wdt%3AP106%20%3Foccupation%20.%7D%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%0A%09%09bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%0A%09%7D%0A%20%20%7D
+    #  https://query.wikidata.org/#SELECT%20distinct%20%3Fitem%20%3FitemLabel%20%3FitemDescription%20%3FcountryLabel%20%0A%3Fdate_birth%20%3Fdate_death%20%3Fbirth_placeLabel%20%3FgenderLabel%20%3FoccupationLabel%20%3Fimage%0AWHERE%20%0A%7B%0A%20%20%3Fitem%20%3Flabel%20%27Elizabeth%20Cary%20Agassiz%27%40en.%0A%20%20%3Fitem%20wdt%3AP31%20wd%3AQ5%20.%0A%20%20OPTIONAL%20%7B%20%3Fitem%20wdt%3AP21%20%3Fgender%20.%7D%0A%20%20OPTIONAL%20%7B%20%3Fitem%20wdt%3AP27%20%3Fcountry%20.%7D%0A%20%20OPTIONAL%20%7B%20%3Fitem%20wdt%3AP569%20%3Fdate_birth%20.%7D%0A%20%20OPTIONAL%20%7B%20%3Fitem%20wdt%3AP570%20%3Fdate_death%20.%7D%0A%20%20OPTIONAL%20%7B%20%3Fitem%20wdt%3AP19%20%3Fbirth_place%20.%7D%0A%20%20OPTIONAL%20%7B%20%3Fitem%20wdt%3AP106%20%3Foccupation%20.%7D%0A%20%20OPTIONAL%20%7B%20%3Fitem%20wdt%3AP18%20%3Fimage%20.%7D%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%0A%09%09bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%0A%09%7D%0A%20%20%7D
     sparql_query = 'SELECT distinct ?item ?itemLabel ?itemDescription ?countryLabel ?date_birth ?date_death ' \
-                   '?birth_placeLabel ?genderLabel ?occupationLabel ' \
+                   '?birth_placeLabel ?genderLabel ?occupationLabel ?image ' \
                    'WHERE { ' \
                    '?item ?label \'' + author + '\'@en. ' \
                    '?item wdt:P31 wd:Q5. ' \
@@ -54,6 +55,7 @@ for author in df['Author']:
                     'OPTIONAL { ?item wdt:P570 ?date_death .} ' \
                     'OPTIONAL { ?item wdt:P19 ?birth_place .} ' \
                     'OPTIONAL { ?item wdt:P106 ?occupation .}' \
+                    'OPTIONAL { ?item wdt:P18 ?image .}' \
                    'SERVICE wikibase:label { ' \
                         'bd:serviceParam wikibase:language "en". ' \
                     '}' \
@@ -61,7 +63,7 @@ for author in df['Author']:
     r = requests.get(url, params={'format': 'json', 'query': sparql_query})
     response = r.json()
     if response['results']['bindings']:
-        occupation = []
+        occupation = ""
         for key in response['results']['bindings'][0]:
             if key == 'item':
                 df.loc[index, 'author_wikidata_id'] = response['results']['bindings'][0]['item']['value']
@@ -85,18 +87,27 @@ for author in df['Author']:
             elif key == 'date_death':
                 df.loc[index, 'author_wikidata_id'] = response['results']['bindings'][0]['date_death']['value']
                 death_counter += 1
+            elif key == 'occupationLabel':
+                df.loc[index, 'occupation'] = response['results']['bindings'][0]['occupationLabel']['value']
+                occupation_counter += 1
+            elif key == 'image':
+                df.loc[index, 'author_image'] = response['results']['bindings'][0]['image']['value']
+                image_counter += 1
 
     len_bindings = len(response['results']['bindings'])
     counter = 0
     if len_bindings > 1:
+        occupation = ""
         for occup_result in response['results']['bindings']:
             if counter == len_bindings:
                 break
             if 'occupationLabel' in response['results']['bindings'][counter].keys():
-                occupation.append(response['results']['bindings'][counter]['occupationLabel']['value'])
-                counter +=1
-        df.loc[index, 'occupation'] = occupation
-        occupation_counter += 1
+                if occupation:
+                    occupation += ', ' + response['results']['bindings'][counter]['occupationLabel']['value']
+                else:
+                    occupation += response['results']['bindings'][counter]['occupationLabel']['value']
+                counter += 1
+        df.loc[index, 'occupation'] = str(occupation)
     index += 1
     print(f'--- Processed author: {author} ; Index: {index}')
     print(f'{item_counter / index * 100} % items were found on wikidata.')
@@ -106,12 +117,12 @@ for author in df['Author']:
     print(f'{birthplace_counter / index * 100} % birhtplace information were found on wikidata.')
     print(f'{death_counter / index * 100} % death information were found on wikidata.')
     print(f'{occupation_counter / index * 100} % occupation information were found on wikidata.')
-    time.sleep(32)
+    print(f'{image_counter / index * 100} % images were found on wikidata.')
+    time.sleep(30)
 
 
-df.to_csv('../data/' + str(datetime.datetime.now().month) + str(datetime.datetime.now().day) + '_books_info_wikiid.csv',
+df.to_csv('../data/' + str(datetime.datetime.now().month) + str(datetime.datetime.now().day) + '_books_info_wiki.csv',
           index=False, sep='|')
 with open('../data/' + str(datetime.datetime.now().month) + str(datetime.datetime.now().day) + '_author_set.txt', 'w+')as author_set:
     author_set.write(str(no_author_wiki_id))
-print(f'In Total {no_identifier} could not been found in Wikidata')
 print(f'Time Tracking: in total it took {time.time()-start}')
