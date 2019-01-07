@@ -66,6 +66,7 @@ for author in df['Author']:
         occupation = ""
         for key in response['results']['bindings'][0]:
             if key == 'item':
+                wikiid_binding0 = response['results']['bindings'][0]['item']['value']
                 df.loc[index, 'author_wikidata_id'] = response['results']['bindings'][0]['item']['value']
                 item_counter += 1
             elif key == 'itemLabel':
@@ -78,14 +79,17 @@ for author in df['Author']:
             elif key == 'countryLabel':
                 df.loc[index, 'origin'] = response['results']['bindings'][0]['countryLabel']['value']
                 country_counter += 1
-            elif key == 'date_birth':
-                df.loc[index, 'date_birth'] = response['results']['bindings'][0]['date_birth']['value']
+            elif key == 'date_birth': # todo how are only years handled?
+                birth_dt = datetime.datetime.strptime(response['results']['bindings'][0]['date_birth']['value'], '%Y-%m-%dT%H:%M:%SZ')
+                df.loc[index, 'date_birth'] = f'{birth_dt.day}/{birth_dt.month}/{birth_dt.year}'
                 birth_counter += 1
             elif key == 'birth_placeLabel':
-                df.loc[index, 'author_wikidata_id'] = response['results']['bindings'][0]['birth_placeLabel']['value']
+                df.loc[index, 'birth_place'] = response['results']['bindings'][0]['birth_placeLabel']['value']
                 birthplace_counter += 1
             elif key == 'date_death':
-                df.loc[index, 'author_wikidata_id'] = response['results']['bindings'][0]['date_death']['value']
+                death_dt = datetime.datetime.strptime(response['results']['bindings'][0]['date_death']['value'],
+                                                      '%Y-%m-%dT%H:%M:%SZ')
+                df.loc[index, 'date_death'] = f'{death_dt.day}/{death_dt.month}/{death_dt.year}'
                 death_counter += 1
             elif key == 'occupationLabel':
                 df.loc[index, 'occupation'] = response['results']['bindings'][0]['occupationLabel']['value']
@@ -101,8 +105,8 @@ for author in df['Author']:
         for occup_result in response['results']['bindings']:
             if counter == len_bindings:
                 break
-            if 'occupationLabel' in response['results']['bindings'][counter].keys():
-                if occupation:
+            if 'occupationLabel' in response['results']['bindings'][counter].keys() and response['results']['bindings'][counter]['item']['value'] == wikiid_binding0:
+                if occupation: # todo string als liste
                     occupation += ', ' + response['results']['bindings'][counter]['occupationLabel']['value']
                 else:
                     occupation += response['results']['bindings'][counter]['occupationLabel']['value']
@@ -114,15 +118,13 @@ for author in df['Author']:
     print(f'{gender_counter / index * 100} % gender information were found on wikidata.')
     print(f'{country_counter / index * 100} % origin information were found on wikidata.')
     print(f'{birth_counter / index * 100} % birth information were found on wikidata.')
-    print(f'{birthplace_counter / index * 100} % birhtplace information were found on wikidata.')
+    print(f'{birthplace_counter / index * 100} % birthplace information were found on wikidata.')
     print(f'{death_counter / index * 100} % death information were found on wikidata.')
     print(f'{occupation_counter / index * 100} % occupation information were found on wikidata.')
     print(f'{image_counter / index * 100} % images were found on wikidata.')
-    time.sleep(30)
+    time.sleep(33)
 
 
 df.to_csv('../data/' + str(datetime.datetime.now().month) + str(datetime.datetime.now().day) + '_books_info_wiki.csv',
           index=False, sep='|')
-with open('../data/' + str(datetime.datetime.now().month) + str(datetime.datetime.now().day) + '_author_set.txt', 'w+')as author_set:
-    author_set.write(str(no_author_wiki_id))
 print(f'Time Tracking: in total it took {time.time()-start}')
