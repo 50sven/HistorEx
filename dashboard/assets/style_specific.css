@@ -1,0 +1,42 @@
+#ddbox {
+}
+
+
+#ColumnBlockSpecific {
+    background-image: linear-gradient(rgba(255,255,255,0.7),
+    rgba(255,255,255,0.7)),
+    url("image_battle.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-top: solid;
+    border-width: 15px;
+    border-color: var(--blue_color);
+    padding: 1%;
+    display: grid;
+    height: 1000px;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 10% 45% 45%;
+    grid-template-areas:
+        "book book"
+        "network author"
+        "bar person"
+}
+
+#bTbox {
+    font-size: 130%;
+    grid-area: book;
+    text-align: center;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1%;
+}
+
+#Network {
+    grid-area: network;
+    background-color: red;
+}
+
+#BarSpecific {
+    grid-area: bar;
+}

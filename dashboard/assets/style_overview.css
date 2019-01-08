@@ -1,0 +1,99 @@
+#ColumnBlockOverview {
+    background-image: linear-gradient(rgba(255,255,255,0.7),
+    rgba(255,255,255,0.7)),
+    url("image_battle.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    padding: 1%;
+    display: grid;
+    height: 1000px;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 10% 40% 50%;
+    grid-template-areas:
+        "tsne theadline"
+        "tsne table"
+        "person table" ;
+}
+
+#leftScatter {
+    grid-area: tsne;
+    padding-bottom: 0.5%;
+    padding-right: 0.5%;
+}
+
+
+#BarOverview {
+    grid-area: person;
+}
+
+#tableHeadline {
+    grid-area: theadline;
+    color: var(--red_color);
+    font-size: 180%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 0.5%;
+    text-shadow: 0 0 10px #ffffff;
+}
+
+#table {
+    grid-area: table;
+    border: solid;
+    border-color: var(--red_color);
+    border-radius: 3px;
+}
+
+th:nth-child(1), td:nth-child(1) {
+    width: 60%;
+  }
+
+th:nth-child(2), td:nth-child(3) {
+    width: 30%;
+  }
+
+th:nth-child(3), td:nth-child(3) {
+    width: 10%;
+    text-align: center;
+  }
+
+table {
+    display: flex;
+    flex-flow: column;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+table thead {
+    font-size: 175%;
+    text-align: left;
+    flex: 0 0 auto;
+    width: calc(100% - 0.75vw);
+}
+
+table tbody {
+    font-size: 120%;
+    flex: 1 1 auto;
+    display: block;
+    overflow-y: scroll;
+}
+
+table tbody tr {
+    width: 100%;
+}
+table thead, table tbody tr {
+    display: table;
+    table-layout: fixed;
+}
+
+th, td {
+    border-bottom: 1px solid var(--blue_color);
+}
+
+tbody tr:hover {
+    /* background-color: var(--red_color);
+    text-shadow: 0 0 5px #ffffff; */
+    background-color: var(--blue_color);
+    color: white;
+}
