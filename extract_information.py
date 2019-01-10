@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 from collections import Counter
+import spacy
 import pickle
-from CONSTANTS import *
 
 BOOK_TITLES = pickle.load(open("dashboard/assets/data_overview_tsne.pkl", "rb"))["titles"]
 
@@ -127,19 +127,75 @@ def get_persons_and_places(file, num_persons=10, num_places=10):
             places_list, places_frequency_list)
 
 
+def get_persons_and_places_by_spacy(file, num_persons=10, num_places=10):
+    """Extract most frequent persons and places from raw text files with spacy
+
+    Args:
+        file (string): path to .xml file
+        num_persons (int): number of persons returned
+        num_places (int): number of places returned
+
+    Returns:
+        persons_list (list): list of most common persons
+        persons_frequency_list (list): frequency of persons_list
+        places_list (list): list of most common places
+        places_frequency_list (list): frequency of places_list
+    """
+    nlp = spacy.load('en_core_web_sm')
+
+    with open(file, encoding='utf-8') as f:
+        text = f.read()
+
+    if len(text) > 1e6:
+        n = 1e5
+        text_chunks = [nlp(text[i:i + int(n)]) for i in range(0, len(text), int(n))]
+        persons = [e.text for tc in text_chunks for e in tc.ents
+                   if (e.label_ == "PERSON" and
+                       "\r" not in e.text and
+                       "\n" not in e.text)]
+        places = [e.text for tc in text_chunks for e in tc.ents
+                  if (e.label_ == "GPE" and
+                      "\r" not in e.text and
+                      "\n" not in e.text)]
+    else:
+        doc = nlp(text)
+        persons = [e.text for e in doc.ents
+                   if (e.label_ == "PERSON" and
+                       "\r" not in e.text and
+                       "\n" not in e.text)]
+        places = [e.text for e in doc.ents
+                  if (e.label_ == "GPE" and
+                      "\r" not in e.text and
+                      "\n" not in e.text)]
+
+    counter_persons = Counter(persons).most_common(num_persons)
+    persons_list = [p[0] for p in counter_persons][::-1]
+    persons_frequency_list = [p[1] for p in counter_persons][::-1]
+
+    counter_places = Counter(places).most_common(num_places)
+    places_list = [p[0] for p in counter_places][::-1]
+    places_frequency_list = [p[1] for p in counter_places][::-1]
+
+    return (persons_list, persons_frequency_list,
+            places_list, places_frequency_list)
+
+
 if __name__ == "__main__":
 
     import glob
     import natsort
+    from CONSTANTS import *
 
-    files = glob.glob(PATH_XML + '/*')
+    files = glob.glob(PATH_XML + '/*')  # by tag
+    # files = glob.glob(PATH_RAW_TEXT + '/*') # by spacy
     files = natsort.natsorted(files)
-
     aggregated_data = dict()
-    persons = []
+
     for idx, file in enumerate(files):
         print(f"Processing: {files[idx]}")
+
         persons_list, persons_frequency_list, places_list, places_frequency_list = get_persons_and_places(file, num_persons=10, num_places=20)
+        # persons_list, persons_frequency_list, places_list, places_frequency_list = get_persons_and_places_by_spacy(file, num_persons=10, num_places=20)
 
         title = BOOK_TITLES[idx]
 
@@ -153,3 +209,4 @@ if __name__ == "__main__":
                 "frequency": places_frequency_list
             }
         }
+        break
