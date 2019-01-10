@@ -1,9 +1,6 @@
 from bs4 import BeautifulSoup
 from collections import Counter
 import spacy
-import pickle
-
-BOOK_TITLES = pickle.load(open("dashboard/assets/data_overview_tsne.pkl", "rb"))["titles"]
 
 
 def get_persons(file, num=10):
@@ -150,23 +147,21 @@ def get_persons_and_places_by_spacy(file, num_persons=10, num_places=10):
         n = 1e5
         text_chunks = [nlp(text[i:i + int(n)]) for i in range(0, len(text), int(n))]
         persons = [e.text for tc in text_chunks for e in tc.ents
-                   if (e.label_ == "PERSON" and
-                       "\r" not in e.text and
-                       "\n" not in e.text)]
+                   if e.label_ == "PERSON"]
         places = [e.text for tc in text_chunks for e in tc.ents
-                  if (e.label_ == "GPE" and
-                      "\r" not in e.text and
-                      "\n" not in e.text)]
+                  if e.label_ == "GPE"]
     else:
         doc = nlp(text)
         persons = [e.text for e in doc.ents
-                   if (e.label_ == "PERSON" and
-                       "\r" not in e.text and
-                       "\n" not in e.text)]
+                   if e.label_ == "PERSON"]
         places = [e.text for e in doc.ents
-                  if (e.label_ == "GPE" and
-                      "\r" not in e.text and
-                      "\n" not in e.text)]
+                  if e.label_ == "GPE"]
+
+    persons = [p for p in persons if (" " in p and
+                                      "\r" not in p and
+                                      "\n" not in p)]
+    places = [p for p in places if ("\r" not in p and
+                                    "\n" not in p)]
 
     counter_persons = Counter(persons).most_common(num_persons)
     persons_list = [p[0] for p in counter_persons][::-1]
@@ -184,10 +179,13 @@ if __name__ == "__main__":
 
     import glob
     import natsort
+    import pickle
     from CONSTANTS import *
 
+    BOOK_TITLES = pickle.load(open("dashboard/assets/data_overview_tsne.pkl", "rb"))["titles"]
+
     files = glob.glob(PATH_XML + '/*')  # by tag
-    # files = glob.glob(PATH_RAW_TEXT + '/*') # by spacy
+    # files = glob.glob(PATH_RAW_TEXT + '/*')  # by spacy
     files = natsort.natsorted(files)
     aggregated_data = dict()
 
