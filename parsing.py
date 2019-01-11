@@ -80,11 +80,11 @@ def xml_to_text(file, path, return_text=False, windows_OS=True):
         text (string): return the extracted meta information and text body
     """
     with open(file, "rb") as f:
-        
+
         if(windows_OS):
             f = f.read()
             f = f.decode('utf-8', 'ignore').encode('latin-1', 'ignore').decode('utf-8', 'ignore')
-            
+
         soup = BeautifulSoup(f, "html.parser")
 
     with open(path, "w") as t:
@@ -119,13 +119,11 @@ def xml_to_text(file, path, return_text=False, windows_OS=True):
 
 if __name__ == "__main__":
 
-    
     import glob
     import numpy as np
-    
-    
+
     files = glob.glob(PATH_XML+'/*')
-    
+
     for idx, file in enumerate(files):
         print(f"Processing: {files[idx]}")
         book_number = re.findall("\d+", file)[0]
