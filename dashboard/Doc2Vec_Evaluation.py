@@ -50,26 +50,10 @@ def get_most_similar_tokens(input_token, cos_sim_matrix, kind="tokens", num=10, 
     return output_tokens, similarities
 
 
-def get_cosine_similarity(embeddings, mapping):
-    """Retrieve cosine similarity matrix
-    """
-
-    cos_sim_matrix = cosine_similarity(embeddings)
-    cos_sim_matrix_df = pd.DataFrame(cos_sim_matrix)
-    cos_sim_matrix_df.columns = mapping.keys()
-    cos_sim_matrix_df.index = mapping.keys()
-
-    return cos_sim_matrix_df
-
-
 ################################################################################################################
 
 
 if __name__ == "__main__":
-
-    # embeddings = pickle.load(open('./assets/data_embeddings.pkl', 'rb'))
-    # id_mapping = pickle.load(open("./assets/data_id_mapping.pkl", "rb"))
-    # cos_sim_matrix = get_cosine_similarity(embeddings, id_mapping)
 
     remaining_persons = pickle.load(open('./assets/data_remaining_persons.pkl', 'rb'))
     remaining_places = pickle.load(open('./assets/data_remaining_places.pkl', 'rb'))

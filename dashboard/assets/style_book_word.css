@@ -1,0 +1,80 @@
+#ColumnBlockBook, #ColumnBlockWord {
+    background-image: linear-gradient(rgba(255,255,255,0.9),
+    rgba(255,255,255,0.9)),
+    url("image_battle.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: grid;
+    padding: 1%;
+}
+
+#ColumnBlockBook {
+    height: 1200px;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 22.5% 27.5% 50%;
+    grid-template-areas:
+        "name name"
+        "author author"
+        "chart1 chart2"
+}
+
+#ColumnBlockWord {
+    height: 700px;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 15% 85%;
+    grid-template-areas:
+        "name name"
+        "chart1 chart2"
+}
+
+#specTitBox {
+    font-size: 130%;
+    grid-area: name;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1%;
+}
+
+#DocChart {
+    grid-area: chart1;
+    margin-top: 5%;
+}
+
+#PersChart {
+    grid-area: chart2;
+    margin-top: 5%;
+    padding-left: 2%;
+}
+
+#AuthorBox {
+    grid-area: author;
+    margin-top: 1%;
+    display: grid;
+    grid-template-columns: 35% 65%;
+    grid-template-areas:
+        "image data"
+}
+
+#AuthorImage {
+    grid-area: image;
+    position: relative;
+    padding: 0% 1% 1% 0%;
+}
+
+#AImg {
+    width: 60%;
+    height: 99%;
+    position: absolute;
+    left: 20%;
+}
+
+#AuthorData {
+    grid-area: data;
+    color: var(--blue_color);
+    font-size: 140%;
+    padding: 1% 0% 1% 1%;
+    margin-left: 1%;
+}
+

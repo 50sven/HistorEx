@@ -1,7 +1,8 @@
 import dash_html_components as html
 import dash_core_components as dcc
 import plotly.graph_objs as go
-import math
+import dash_table
+from app import app
 
 
 def Header(page):
@@ -18,19 +19,26 @@ def Header(page):
     ], href="/dashboard/overview")
 
     button2 = html.A(id="btn2box", children=[
-        html.Button("SPECIFIC", id="btn2", className="btn")
-    ], href="/dashboard/specific")
+        html.Button("BOOK", id="btn2", className="btn")
+    ], href="/dashboard/book")
+
+    button3 = html.A(id="btn3box", children=[
+        html.Button("WORD", id="btn3", className="btn")
+    ], href="/dashboard/word")
 
     if page == "overview":
         button1.children[0].style = style
-    if page == "specific":
+    if page == "book":
         button2.children[0].style = style
+    if page == "word":
+        button3.children[0].style = style
 
     return html.Div(id="header", children=[
         get_title(),
         get_subtitle(),
         button1,
-        button2
+        button2,
+        button3
     ])
 
 
@@ -73,17 +81,17 @@ def Scatter(data):
             marker=dict(
                 size=10,
                 opacity=0.5,
-                color='#002C77',
+                color='#B22234',
             ),
             textfont=dict(family='Soria, Times New Roman, Times, serif')
         )],
         layout=dict(
-            title="Most similar Documents",
+            title="<b>Document Similarities</b>",
             hovermode='closest',
-            font=dict(family='Soria, Times New Roman, Times, serif', color='#B22234', size=18),
+            font=dict(family='Soria, Times New Roman, Times, serif', color='#002C77', size=18),
             margin=dict(l=10, r=10, t=50, b=10),
-            plot_bgcolor="#ffffff",
-            paper_bgcolor="#ffffff",
+            plot_bgcolor="rgba(0,0,0,0)",
+            paper_bgcolor="rgba(0,0,0,0)",
             xaxis=dict(showgrid=True,
                        showline=False,
                        showticklabels=False),
@@ -99,21 +107,32 @@ def BarOverview(data):
     """
     return dcc.Graph(id="BarOverview", className="bar", figure=dict(
         data=[go.Bar(
-            x=data["occurence"],
+            x=data["frequencies"],
             y=data["names"],
             orientation='h',
             marker={
-                'color': '#002C77',
+                'color': '#e02b42',
             },
         )],
         layout=dict(
-            title="Most popular People",
-            font=dict(family='Soria, Times New Roman, Times, serif', color='#B22234', size=18),
-            margin=dict(l=110, r=20, t=50, b=30),
-            plot_bgcolor="#ffffff",
-            paper_bgcolor="#ffffff",
+            title="<b>Most common Persons</b>",
+            font=dict(family='Soria, Times New Roman, Times, serif', color='#002C77', size=18),
+            margin=dict(l=10, r=20, t=50, b=30),
+            plot_bgcolor="rgba(0,0,0,0)",
+            paper_bgcolor="rgba(0,0,0,0)",
             xaxis=dict(tick0=0, dtick=5000),
-            yaxis=dict(ticks='outside')
+            yaxis=dict(ticks='outside',
+                       showgrid=True,
+                       showline=False,
+                       showticklabels=False),
+            annotations=[dict(xref='paper', yref='y',
+                              x=0, y=yd,
+                              font=dict(
+                                  color="#000000",
+                                  size=15
+                              ),
+                              text=str(yd),
+                              showarrow=False) for xd, yd in zip(data["frequencies"], data["names"])]
         )
     ))
 
@@ -121,22 +140,28 @@ def BarOverview(data):
 def Table(data):
     """Returns Table for overview page
     """
-    return html.Div(id="table", children=[
-        html.Table([
-            html.Thead([
-                    html.Tr([
-                            html.Th(col) for col in ["Title", "Author", "Date"]
-                            ])
-                    ]),
-            html.Tbody([
-                html.Tr([
-                    html.Td([
-                        data.iloc[i][col]
-                    ]) for col in data.columns
-                ]) for i in range(len(data))
-            ])
-        ])
-    ])
+    data.columns = ["Title", "Author", "Date"]
+    return dash_table.DataTable(
+        id='table',
+        columns=[{"name": i, "id": i} for i in data.columns],
+        data=data.to_dict("rows"),
+        style_as_list_view=True,
+        sorting=True,
+        style_header={
+            'fontWeight': 'bold'
+        },
+        style_cell={
+        },
+        style_cell_conditional=[
+            {'if': {'column_id': 'Title'},
+             'textAlign': 'left'},
+            {'if': {'column_id': 'Author'},
+             'textAlign': 'left'},
+            {'if': {'column_id': 'Date'},
+             'textAlign': 'center'},
+        ],
+        style_data={'whiteSpace': 'normal'},
+    )
 
 
 def Map(data):
@@ -157,15 +182,15 @@ def Map(data):
                 symbol='circle',
                 color="#B22234",
                 opacity=0.8,
-                size=data['occurence'],
+                size=data['frequencies'],
                 sizemode='area',
-                sizeref=max(data['occurence']) / (5.**3),
+                sizeref=max(data['frequencies']) / (5.**3),
                 sizemin=1,
                 line=dict(width=0)
             )
         )],
         layout=dict(
-            title='Most popular Places',
+            title='<b>Most common Places</b>',
             font=dict(family='Soria, Times New Roman, Times, serif', color='#B22234', size=18),
             dragmode="pan",
             geo=dict(
@@ -173,12 +198,12 @@ def Map(data):
                 oceancolor="rgba(0, 44, 119, 0.7)",
                 showland=True,
                 landcolor="#ededed",  # c4c4c4, #0ba340
-                lonaxis=dict(range=[-125, 35]),
-                lataxis=dict(range=[10, 70]),
+                lonaxis=dict(range=[min(lon) - 10, max(lon) + 10]),
+                lataxis=dict(range=[min(lat) - 10, max(lat) + 10]),
                 showcountries=True,
                 countrywidth=0.5,
                 subunitwidth=0.5,
-                projection=dict(type="equirectangular", scale=1)
+                projection=dict(type="equirectangular")
             ),
             margin=dict(l=0, r=0, t=50, b=30),
             hovermode="closest",
@@ -189,118 +214,70 @@ def Map(data):
     ))
 
 
-def Dropdown(data):
+def Dropdown(page, data):
     """Returns Dropdown Menu for specific page
     """
+    if page == "book":
+        ph = "Select a book from the collection"
+    if page == "word":
+        ph = "Select a word from the vocabulary"
+
     return html.Div(id="ddbox", children=[
         dcc.Dropdown(
             id='dropdown',
             options=[{"label": x, "value": x} for x in data],
-            placeholder="Select the book of interest",
-            style={
-            }
+            placeholder=ph,
         )
     ])
 
 
-def BarSpecific():
+def BarSpecific(id_tag):
     """Returns Bar Chart for overview persons or specific document similarity
     """
-    data = {'persons': ["persons"], 'frequency': [1]}
-    return dcc.Graph(id="BarSpecific", className="bar", figure=dict(
+    if id_tag == "DocChart":
+        data = {'persons': ["Documents"], 'frequency': [1]}
+        title = "<b>Document Similarities</b>"
+    if id_tag == "PersChart":
+        data = {'persons': ["Persons"], 'frequency': [1]}
+        title = "<b>Common Persons</b>"
+
+    return dcc.Graph(id=id_tag, className="bar", figure=dict(
         data=[go.Bar(
             x=data["frequency"],
             y=data["persons"],
             orientation='h',
             marker={
-                'color': '#002C77',
+                'color': '#e02b42',
             },
         )],
         layout=dict(
-            title="Most popular Persons",
-            font=dict(family='Soria, Times New Roman, Times, serif', color='#B22234', size=18),
-            margin=dict(l=110, r=20, t=50, b=30),
-            plot_bgcolor="#ffffff",
-            paper_bgcolor="#ffffff",
+            title=title,
+            font=dict(family='Soria, Times New Roman, Times, serif', color='#002C77', size=18),
+            margin=dict(l=100, r=20, t=50, b=30),
+            plot_bgcolor="rgba(0,0,0,0)",
+            paper_bgcolor="rgba(0,0,0,0)",
             xaxis=dict(tick0=0, dtick=1),
             yaxis=dict(ticks='outside')
         )
     ))
 
 
-def Network():
-    """Returns similarity network for a specific book
-    """
-    book_of_interest = "Book0"
-    similarities = {"book2": 0.9, "book3": 0.5, "book4": 0.7, "book5": 0.1, "book6": 0.3}
-
-    nodes = [(0, -1),
-             (0.9511, -0.309),
-             (0.5878, 0.809),
-             (-0.5878, 0.809),
-             (-0.9511, -0.309)]
-    nodes = [(nodes[idx][0] * math.sqrt((1 - v) * 10), nodes[idx][1] * math.sqrt((1 - v) * 10)) for idx, (b, v) in enumerate(similarities.items())]
-    nodes.append((0, 0))
-
-    edges = {"x": [], "y": []}
-    for idx, n in enumerate(nodes[:-1]):
-        if idx == len(nodes):
-            pass
-        edges["x"] += (0, n[0], None)
-        edges["y"] += (0, n[1], None)
-
-    edge_trace = go.Scatter(
-        x=edges["x"],
-        y=edges["y"],
-        line=dict(width=5, color='#B22234'),
-        hoverinfo='none',
-        mode='lines')
-
-    node_trace = go.Scatter(
-        x=[n[0] for n in nodes],
-        y=[n[1] for n in nodes],
-        text=[b for b in similarities.keys()] + [None],
-        mode='markers',
-        hoverinfo='text',
-        marker=dict(
-            symbol='circle',
-            color="#002C77",
-            sizemode='area',
-            size=50,
-        ))
-
-    graph = dcc.Graph(id="network", figure=dict(
-        data=[edge_trace, node_trace],
-        layout=dict(
-            title="Most similar Documents",
-            font=dict(family='Soria, Times New Roman, Times, serif',
-                      color='#B22234',
-                      size=18),
-            margin=dict(l=10, r=10, t=50, b=10),
-            showlegend=False,
-            plot_bgcolor="#ffffff",
-            paper_bgcolor="#ffffff",
-            xaxis=dict(showgrid=False,
-                       showline=False,
-                       showticklabels=False,
-                       zeroline=False),
-            yaxis=dict(showgrid=False,
-                       showline=False,
-                       showticklabels=False,
-                       zeroline=False)
-        ))
-    )
-
-    return graph
-
-
 def Author(data):
     """Returns Author information for a specific book
     """
-    pass
-
-
-def List(data):
-    """Returns List of most popular persons for a spcecific book
-    """
-    pass
+    return html.Div(id="AuthorBox", children=[
+        html.Div(id="AuthorImage", children=[
+            html.Img(id="AImg", src=app.get_asset_url('profile_dummy.png'))
+        ]),
+        html.Div(id="AuthorData", children=[
+            html.H1("Author Information"),
+            html.P("Name: name"),
+            html.P("Born: date, place"),
+            html.P("Date of death: date"),
+            html.P("Origin: place"),
+            html.P("Occupation: occupation"),
+            html.P("Publishing date of book: date"),
+            html.Br(),
+            html.A("Link to Wikidata", href='http://www.google.com', target="_blank")
+        ])
+    ])

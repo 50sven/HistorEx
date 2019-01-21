@@ -47,7 +47,7 @@ def get_persons(file, num=10):
     persons_list = [n[0] for n in names_count]
     persons_list = [sorted(p, key=lambda x: (x[1], len(x[0])),
                            reverse=True) for p in persons_list]
-    persons_list = [p[0][0] for p in persons_list]
+    persons_list = [p[0][0] for p in persons_list if p]
 
     # Finally, slice the most common persons with their frequencies
     persons_list = persons_list[::-1][-num:]
@@ -92,7 +92,7 @@ def get_places(file, num=10):
     places_list = [[n for n in p if n] for p in places_list]
     places_list = [sorted(p, key=lambda x: (len(x), x[0].isupper()),
                           reverse=True) for p in places_list]
-    places_list = [p[0] for p in places_list]
+    places_list = [p[0] for p in places_list if p]
     places_list = places_list[::-1]
     frequency_list = frequency_list[::-1]
 
@@ -189,22 +189,30 @@ if __name__ == "__main__":
     files = natsort.natsorted(files)
     aggregated_data = dict()
 
+    persons = []
+    places = []
+
     for idx, file in enumerate(files):
         print(f"Processing: {files[idx]}")
 
-        persons_list, persons_frequency_list, places_list, places_frequency_list = get_persons_and_places(file, num_persons=10, num_places=20)
-        # persons_list, persons_frequency_list, places_list, places_frequency_list = get_persons_and_places_by_spacy(file, num_persons=10, num_places=20)
+        # persons_list, persons_frequency_list, places_list, places_frequency_list = get_persons_and_places(file, num_persons=9999, num_places=9999)
+        # # persons_list, persons_frequency_list, places_list, places_frequency_list = get_persons_and_places_by_spacy(file, num_persons=10, num_places=20)
 
-        title = BOOK_TITLES[idx]
+        # title = BOOK_TITLES[idx]
 
-        aggregated_data[title] = {
-            "persons": {
-                "names": persons_list,
-                "frequency": persons_frequency_list
-            },
-            "places": {
-                "names": places_list,
-                "frequency": places_frequency_list
-            }
-        }
-        break
+        # aggregated_data[title] = {
+        #     "persons": {
+        #         "names": persons_list,
+        #         "frequency": persons_frequency_list
+        #     },
+        #     "places": {
+        #         "names": places_list,
+        #         "frequency": places_frequency_list
+        #     }
+        # }
+
+        person_list, _ = get_persons(file, num=9999)
+        places_list, _ = get_places(file, num=9999)
+
+        persons += person_list
+        places += places_list
