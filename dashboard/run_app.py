@@ -8,7 +8,7 @@ from geopy import Nominatim
 from Doc2Vec_Evaluation import get_most_similar_tokens
 
 from app import app
-from components import Header, Table, Scatter, BarOverview, Map, Dropdown, BarSpecific, Author
+from components import Header, Table, Scatter, BarOverview, Map, Dropdown, BarSpecific, DocSpecific, Author
 
 geolocator = Nominatim(user_agent="geolocator")
 
@@ -64,16 +64,18 @@ book = html.Div(id="body1", children=[
 
     html.Div(id="ColumnBlockBook", children=[
 
-        Author("data"),
+        Author(),
 
         html.Div(id="specTitBox", children=[
             html.H1(id="specificTitle", children=[])
         ]),
 
-        BarSpecific("DocChart"),
+        html.Div(id="DocSimDiv", children=[
+            html.H1(id="DocSimHead", children=["Most similar Documents"]),
+            DocSpecific(),
+        ]),
 
-
-        BarSpecific("PersChart"),
+        BarSpecific(),
     ]),
 
     html.Div(id="MapBlock", children=[
@@ -95,10 +97,13 @@ word = html.Div(id="body1", children=[
             html.H1(id="specificTitle", children=[])
         ]),
 
-        BarSpecific("DocChart"),
+        html.Div(id="DocSimDiv", children=[
+            html.H1(id="DocSimHead", children=["Most similar Documents"]),
+            DocSpecific(),
+        ]),
 
 
-        BarSpecific("PersChart"),
+        BarSpecific(),
     ]),
 
 
@@ -137,12 +142,6 @@ def display_page(pathname):
     return "404 Page not found"
 
 
-@app.callback(Output('url', 'pathname'),
-              [Input('table', 'selected_cells')])
-def jump_to_book_page(cell):
-  return "/dashboard/book"
-
-
 @app.callback(Output('specificTitle', 'children'),
               [Input('dropdown', 'value')])
 def update_specific_title(value):
@@ -161,7 +160,7 @@ def update_author_information(value):
   image = data["author_image"].values[0]
   if image == "-":
     image = app.get_asset_url('profile_dummy.png')
-  author = data["author"].values[0].upper()
+  author = data["Author"].values[0].upper()
   origin = data["origin"].values[0]
   date_birth = data["date_birth"].values[0]
   birth_place = data["birth_place"].values[0]
@@ -170,7 +169,7 @@ def update_author_information(value):
   pub_date = data["Publishing Date"].values[0]
   link = data["author_wikidata_id"].values[0]
   if link == "-":
-    link = None
+    link = "http://www.google.com"
 
   return [html.Div(id="AuthorImage", children=[
       html.Img(id="AImg", src=image)
@@ -242,10 +241,10 @@ def update_pers_chart(value, page):
   return figure
 
 
-@app.callback(Output('DocChart', 'figure'),
+@app.callback(Output('DocSim', 'data'),
               [Input('dropdown', 'value'),
                Input('url', 'pathname')])
-def update_doc_chart(value, page):
+def update_doc_sim_table(value, page):
 
   if not value:
     return
@@ -262,38 +261,12 @@ def update_doc_chart(value, page):
                                                   num=10, places=None, persons=None)
     title = "<b>Most similar Documents</b>"
 
-  figure = dict(
-      data=[go.Bar(
-          x=similarities,
-          y=books,
-          orientation='h',
-          marker={
-              'color': '#cc273c',
-          },
-      )],
-      layout=dict(
-          title=title,
-          font=dict(family='Soria, Times New Roman, Times, serif', color='#002C77', size=18),
-          margin=dict(l=10, r=10, t=50, b=30),
-          plot_bgcolor="rgba(0,0,0,0)",
-          paper_bgcolor="rgba(0,0,0,0)",
-          xaxis=dict(tick0=0, dtick=max(similarities)),
-          yaxis=dict(ticks='outside',
-                     showgrid=True,
-                     showline=False,
-                     showticklabels=False),
-          annotations=[dict(xref='paper', yref='y',
-                            x=0, y=yd,
-                            font=dict(
-                                color="#000000",
-                                size=14
-                            ),
-                            text=str(yd),
-                            showarrow=False) for xd, yd in zip(similarities, books)]
-      )
-  )
+  books = books[::-1]
+  similarities = similarities[::-1]
 
-  return figure
+  data = [{"Book": books[i], "Similarity": str(round(similarities[i], 4))} for i in range(len(books))]
+
+  return data
 
 
 @app.callback(Output('MapGraph', 'figure'),
@@ -362,7 +335,7 @@ def update_map(value, page):
               showocean=True,
               oceancolor="rgba(0, 44, 119, 0.7)",
               showland=True,
-              landcolor="#ededed",  # c4c4c4, #0ba340
+              landcolor="#ededed",
               lonaxis=dict(range=[min(lon) - 10, max(lon) + 10]),  # [-125, 35]
               lataxis=dict(range=[min(lat) - 10, max(lat) + 10]),  # [10, 70]
               showcountries=True,

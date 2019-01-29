@@ -192,6 +192,7 @@ a, a:link, a:visited {
 
 #ColumnBlockBook,
 #ColumnBlockWord,
+#ColumnBlockOverview,
 #MapBlock,
 #ddbox  {
     border-top: solid;

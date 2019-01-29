@@ -6,7 +6,7 @@ from app import app
 
 
 def Header(page):
-    """Returns header for end points 'overview' and 'specific'
+    """Returns header for all end points
     """
     style = {
         "background-color": "var(--red_color)",
@@ -103,7 +103,7 @@ def Scatter(data):
 
 
 def BarOverview(data):
-    """Returns Bar Chart for overview persons or specific document similarity
+    """Returns Bar Chart for overview persons
     """
     return dcc.Graph(id="BarOverview", className="bar", figure=dict(
         data=[go.Bar(
@@ -165,7 +165,7 @@ def Table(data):
 
 
 def Map(data):
-    """Returns Map for places in both endpoints
+    """Returns Map for places
     """
     lon = [loc[1] for loc in data["geo"]]
     lat = [loc[0] for loc in data["geo"]]
@@ -215,7 +215,7 @@ def Map(data):
 
 
 def Dropdown(page, data):
-    """Returns Dropdown Menu for specific page
+    """Returns Dropdown Menu for specific pages
     """
     if page == "book":
         ph = "Select a book from the collection"
@@ -231,27 +231,20 @@ def Dropdown(page, data):
     ])
 
 
-def BarSpecific(id_tag):
-    """Returns Bar Chart for overview persons or specific document similarity
+def BarSpecific():
+    """Returns Bar Chart for common persons for specific page
     """
-    if id_tag == "DocChart":
-        data = {'persons': ["Documents"], 'frequency': [1]}
-        title = "<b>Document Similarities</b>"
-    if id_tag == "PersChart":
-        data = {'persons': ["Persons"], 'frequency': [1]}
-        title = "<b>Common Persons</b>"
-
-    return dcc.Graph(id=id_tag, className="bar", figure=dict(
+    return dcc.Graph(id="PersChart", className="bar", figure=dict(
         data=[go.Bar(
-            x=data["frequency"],
-            y=data["persons"],
+            x=[1],
+            y=["Persons"],
             orientation='h',
             marker={
                 'color': '#e02b42',
             },
         )],
         layout=dict(
-            title=title,
+            title="<b>Common Persons</b>",
             font=dict(family='Soria, Times New Roman, Times, serif', color='#002C77', size=18),
             margin=dict(l=100, r=20, t=50, b=30),
             plot_bgcolor="rgba(0,0,0,0)",
@@ -262,7 +255,31 @@ def BarSpecific(id_tag):
     ))
 
 
-def Author(data):
+def DocSpecific():
+    """Returns doc similarities table for specific pages
+    """
+    return dash_table.DataTable(
+        id='DocSim',
+        columns=[{"name": i, "id": i} for i in ["Book", "Similarity"]],
+        data=[{"Book": "book0", "Similarity": 1}],
+        style_as_list_view=True,
+        sorting=False,
+        style_header={
+            'fontWeight': 'bold'
+        },
+        style_cell={
+        },
+        style_cell_conditional=[
+            {'if': {'column_id': 'Book'},
+             'textAlign': 'left'},
+            {'if': {'column_id': 'Similarity'},
+             'textAlign': 'center'},
+        ],
+        style_data={'whiteSpace': 'normal'},
+    )
+
+
+def Author():
     """Returns Author information for a specific book
     """
     return html.Div(id="AuthorBox", children=[
@@ -272,9 +289,9 @@ def Author(data):
         html.Div(id="AuthorData", children=[
             html.H1("Author Information"),
             html.P("Name: name"),
+            html.P("Origin: place"),
             html.P("Born: date, place"),
             html.P("Date of death: date"),
-            html.P("Origin: place"),
             html.P("Occupation: occupation"),
             html.P("Publishing date of book: date"),
             html.Br(),
