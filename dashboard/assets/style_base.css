@@ -43,7 +43,7 @@ a, a:link, a:visited {
   text-decoration: none;
 }
 
-*{
+* {
   margin:0;
 }
 
@@ -175,8 +175,8 @@ a, a:link, a:visited {
     display: block;
     width: 100%;
     background-color: #ffffff;
-    background-image: linear-gradient(rgba(255,255,255,0.9),
-    rgba(255,255,255,0.9)),
+    background-image: linear-gradient(rgba(255,255,255,0.8),
+    rgba(255,255,255,0.8)),
     url("image_battle2.jpg");
     background-size: cover;
 }

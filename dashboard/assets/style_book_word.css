@@ -51,7 +51,7 @@
     grid-area: title;
     margin-top: 0.5%;
     font-weight: bold;
-    font-size: 150%;
+    font-size: 165%;
     color: var(--blue_color);
     text-align: center;
 }
@@ -61,8 +61,6 @@
     overflow-y: scroll;
     font-size: 130%;
 }
-
-
 
 #PersChart {
     grid-area: chart1;

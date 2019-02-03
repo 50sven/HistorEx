@@ -17,7 +17,7 @@ overview_tsne = pickle.load(open("./assets/data_overview_tsne.pkl", "rb"))
 overview_persons = pickle.load(open("./assets/data_overview_persons_by_tag.pkl", "rb"))
 overview_places = pickle.load(open("./assets/data_overview_places_by_tag.pkl", "rb"))
 # Book
-author_data = pd.read_csv("./assets/data_author_information.csv", delimiter="|", index_col=0)
+author_data = pd.read_csv("./assets/data_author_information.csv", delimiter="|")
 id_mapping = pickle.load(open("./assets/data_id_mapping.pkl", "rb"))
 specific_entities = pickle.load(open("./assets/data_specific_entities_by_tag.pkl", "rb"))
 doc_similarities = pickle.load(open("./assets/data_doc_similarities.pkl", "rb"))
@@ -25,7 +25,7 @@ doc_similarities = pickle.load(open("./assets/data_doc_similarities.pkl", "rb"))
 vocabulary = list(id_mapping.keys())[308:]
 remaining_persons = pickle.load(open('./assets/data_remaining_persons.pkl', 'rb'))
 remaining_places = pickle.load(open('./assets/data_remaining_places.pkl', 'rb'))
-cos_sim_matrix = pd.read_pickle("./assets/data_cosine_similarity_matrix.pkl")
+cos_sim_matrix = pd.read_pickle("../data_cosine_similarity_matrix.pkl")
 
 
 overview = html.Div(id="body1", children=[
@@ -213,12 +213,12 @@ def update_pers_chart(value, page):
           y=persons,
           orientation='h',
           marker={
-              'color': '#cc273c',
+              'color': '#ff4058',
           },
       )],
       layout=dict(
           title=title,
-          font=dict(family='Soria, Times New Roman, Times, serif', color='#002C77', size=18),
+          font=dict(family='Soria, Times New Roman, Times, serif', color='#002C77', size=19),
           margin=dict(l=10, r=10, t=50, b=30),
           plot_bgcolor="rgba(0,0,0,0)",
           paper_bgcolor="rgba(0,0,0,0)",
@@ -231,7 +231,7 @@ def update_pers_chart(value, page):
                             x=0, y=yd,
                             font=dict(
                                 color="#000000",
-                                size=14
+                                size=19
                             ),
                             text=str(yd),
                             showarrow=False) for xd, yd in zip(quant, persons)]
@@ -252,14 +252,11 @@ def update_doc_sim_table(value, page):
   if "book" in page:
     data = doc_similarities[value]
     books = data["books"]
-    anno = [" ".join(b.split()[:(len(b.split()) // 2)]) + "<br>" + " ".join(b.split()[(len(b.split()) // 2):]) if len(b.split()) > 10 else b for idx, b in enumerate(books)]
     similarities = data["similarities"]
-    title = "<b>Most similar Documents</b>"
 
   if "word" in page:
     books, similarities = get_most_similar_tokens(value, cos_sim_matrix, kind="docs",
                                                   num=10, places=None, persons=None)
-    title = "<b>Most similar Documents</b>"
 
   books = books[::-1]
   similarities = similarities[::-1]
@@ -323,13 +320,13 @@ def update_map(value, page):
                 size=quant,
                 sizemode='area',
                 sizeref=max(quant) / (5.**3),
-                sizemin=1,
+                sizemin=2,
                 line=dict(width=0)
             )
             )],
       layout=dict(
           title=title,
-          font=dict(family='Soria, Times New Roman, Times, serif', color='#B22234', size=18),
+          font=dict(family='Soria, Times New Roman, Times, serif', color='#B22234', size=19),
           dragmode="pan",
           geo=dict(
               showocean=True,

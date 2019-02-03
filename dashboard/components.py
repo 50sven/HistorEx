@@ -69,8 +69,9 @@ def get_subtitle():
 
 
 def Scatter(data):
-    """Returns Scatter Plot for global document similarity
+    """Returns TSNE Plot for global document similarity
     """
+    data["titles"] = [" ".join(b.split()[:(len(b.split()) // 2)]) + "<br>" + " ".join(b.split()[(len(b.split()) // 2):]) if len(b.split()) > 10 else b for idx, b in enumerate(data["titles"])]
     return dcc.Graph(id="leftScatter", figure=dict(
         data=[go.Scatter(
             x=data["x"],
@@ -79,7 +80,7 @@ def Scatter(data):
             hoverinfo='text',
             mode='markers',
             marker=dict(
-                size=10,
+                size=12,
                 opacity=0.5,
                 color='#B22234',
             ),
@@ -88,7 +89,7 @@ def Scatter(data):
         layout=dict(
             title="<b>Document Similarities</b>",
             hovermode='closest',
-            font=dict(family='Soria, Times New Roman, Times, serif', color='#002C77', size=18),
+            font=dict(family='Soria, Times New Roman, Times, serif', color='#002C77', size=19),
             margin=dict(l=10, r=10, t=50, b=10),
             plot_bgcolor="rgba(0,0,0,0)",
             paper_bgcolor="rgba(0,0,0,0)",
@@ -111,16 +112,16 @@ def BarOverview(data):
             y=data["names"],
             orientation='h',
             marker={
-                'color': '#e02b42',
+                'color': '#ff4058'
             },
         )],
         layout=dict(
             title="<b>Most common Persons</b>",
-            font=dict(family='Soria, Times New Roman, Times, serif', color='#002C77', size=18),
+            font=dict(family='Soria, Times New Roman, Times, serif', color='#002C77', size=19),
             margin=dict(l=10, r=20, t=50, b=30),
             plot_bgcolor="rgba(0,0,0,0)",
             paper_bgcolor="rgba(0,0,0,0)",
-            xaxis=dict(tick0=0, dtick=5000),
+            xaxis=dict(tick0=0, dtick=max(data["frequencies"])),
             yaxis=dict(ticks='outside',
                        showgrid=True,
                        showline=False,
@@ -129,7 +130,7 @@ def BarOverview(data):
                               x=0, y=yd,
                               font=dict(
                                   color="#000000",
-                                  size=15
+                                  size=19
                               ),
                               text=str(yd),
                               showarrow=False) for xd, yd in zip(data["frequencies"], data["names"])]
@@ -191,7 +192,7 @@ def Map(data):
         )],
         layout=dict(
             title='<b>Most common Places</b>',
-            font=dict(family='Soria, Times New Roman, Times, serif', color='#B22234', size=18),
+            font=dict(family='Soria, Times New Roman, Times, serif', color='#B22234', size=19),
             dragmode="pan",
             geo=dict(
                 showocean=True,
@@ -232,7 +233,7 @@ def Dropdown(page, data):
 
 
 def BarSpecific():
-    """Returns Bar Chart for common persons for specific page
+    """Returns Bar Chart for common/similar persons for specific page
     """
     return dcc.Graph(id="PersChart", className="bar", figure=dict(
         data=[go.Bar(
@@ -240,12 +241,12 @@ def BarSpecific():
             y=["Persons"],
             orientation='h',
             marker={
-                'color': '#e02b42',
+                'color': '#ff4058',
             },
         )],
         layout=dict(
-            title="<b>Common Persons</b>",
-            font=dict(family='Soria, Times New Roman, Times, serif', color='#002C77', size=18),
+            title="<b>Most similar Persons</b>",
+            font=dict(family='Soria, Times New Roman, Times, serif', color='#002C77', size=19),
             margin=dict(l=100, r=20, t=50, b=30),
             plot_bgcolor="rgba(0,0,0,0)",
             paper_bgcolor="rgba(0,0,0,0)",
