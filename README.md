@@ -1,6 +1,6 @@
 # "Towards Natural Lanuage Understanding"
 
-![alt text](https://github.com/50sven/ISE/Repository_image.png)
+![alt text](https://github.com/50sven/ISE/blob/master/Repository_image.png)
 
 This repository contains a pipeline for training document/word vectors, extracting/linking named entities and an interactive visualization tool to explore the findings. 
 
@@ -24,11 +24,13 @@ Doc2Vec:
 	- Evaluate embeddings (`Doc2Vec_Evaluation.py`, `WordVector_Evaluation.py`)
 	
 Entities:
-	- Extract entities by tag or via spacy ()
+	- Parse html/xml files (`parsing.py`)
+	- Extract entities by tag or via spacy (`extract_information.py`)
+	- Get data from wikidata (`Link_wikidata.py`)
 	
 Dashboard:
-	- use given data or produce own data
-	- 
+	- use given data or produce own data (`assets`)
+	- run app on localhost (`run_app.py`)
 
 
 # Contributors
