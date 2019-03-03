@@ -1,27 +1,34 @@
-# "ISE Topic"
+# "Towards Natural Lanuage Understanding"
 
-This repository contains ...
+![alt text](https://github.com/50sven/ISE/Repository_image.png)
 
-	@article{name, 
-		title={Title}, 
-		author={author}, 
-		year={year}, 
+This repository contains a pipeline for training document/word vectors, extracting/linking named entities and an interactive visualization tool to explore the findings. 
+
+	@article{tnlu, 
+		title={Towards Natural Lanuage Understanding}, 
+		author={Brunzel, Michael and Mueller, Sven and Kaun, Daniela}, 
+		year={2019}, 
 	}
 
 
-# Overview
 ## Getting started
-All code was written in Python Version 3.x, .... . Requirements are listed in requirements.txt. To get started use:
+All code was written in Python Version 3.6. Requirements are listed in requirements.txt. To get started use:
 
 	git clone https://github.com/50sven/ISE
     cd ISE
     pip install -r requirements.txt
     
-Further instructions ... 
-
-## Repository structure
-The repository is structured in the following way:
-![alt text](https://github.com/50sven/ISE/"name".png)
+Doc2Vec:
+	- produce raw text data (`Doc2Vec_Preprocessing.py`)
+	- train document and word embeddings (`Doc2Vec_Training.py`)
+	- Evaluate embeddings (`Doc2Vec_Evaluation.py`, `WordVector_Evaluation.py`)
+	
+Entities:
+	- Extract entities by tag or via spacy ()
+	
+Dashboard:
+	- use given data or produce own data
+	- 
 
 
 # Contributors
