@@ -19,18 +19,19 @@ All code was written in Python Version 3.6. Requirements are listed in requireme
     pip install -r requirements.txt
     
 Doc2Vec:
-	- produce raw text data (`Doc2Vec_Preprocessing.py`)
-	- train document and word embeddings (`Doc2Vec_Training.py`)
-	- Evaluate embeddings (`Doc2Vec_Evaluation.py`, `WordVector_Evaluation.py`)
+	* produce raw text data (`Doc2Vec_Preprocessing.py`)
+	* train document and word embeddings (`Doc2Vec_Training.py`)
+	* Evaluate embeddings (`Doc2Vec_Evaluation.py`, `WordVector_Evaluation.py`)
 	
 Entities:
-	- Parse html/xml files (`parsing.py`)
-	- Extract entities by tag or via spacy (`extract_information.py`)
-	- Get data from wikidata (`Link_wikidata.py`)
+	* Parse html/xml files (`parsing.py`)
+	* Extract entities by tag or via spacy (`extract_information.py`)
+	* Get data from wikidata (`Link_wikidata.py`)
 	
 Dashboard:
-	- use given data or produce own data (`assets`)
-	- run app on localhost (`run_app.py`)
+	* Screencast -> Screencast_Dashboard.mp4
+	* use given data or produce own data (`assets`)
+	* run app on localhost (`run_app.py`)
 
 
 # Contributors
