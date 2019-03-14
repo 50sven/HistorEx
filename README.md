@@ -1,12 +1,12 @@
-# "Towards Natural Lanuage Understanding"
+# "An unsupervised framework for the automated extraction of semantic insights from literature"
 
 ![alt text](https://github.com/50sven/ISE/blob/master/Repository_image.png)
 
 This repository contains a pipeline for training document/word vectors, extracting/linking named entities and an interactive visualization tool to explore the findings. 
 
-	@article{tnlu, 
-		title={Towards Natural Lanuage Understanding}, 
-		author={Brunzel, Michael and Mueller, Sven and Kaun, Daniela}, 
+	@article{Siid, 
+		title={An unsupervised framework for the automated extraction of semantic insights from literature}, 
+		author={Mueller, Sven and Brunzel, Michael and Kaun, Daniela}, 
 		year={2019}, 
 	}
 
