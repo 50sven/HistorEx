@@ -1,11 +1,11 @@
-# "An unsupervised framework for the automated extraction of semantic insights from literature"
+# "Exploring Historical Text Corpora Using Word and Document Embeddings"
 
 ![alt text](https://github.com/50sven/ISE/blob/master/Repository_image.png)
 
 This repository contains a pipeline for training document/word vectors, extracting/linking named entities and an interactive visualization tool to explore the findings. 
 
-	@article{Siid, 
-		title={An unsupervised framework for the automated extraction of semantic insights from literature}, 
+	@article{EHTCuWaDE, 
+		title={Exploring Historical Text Corpora Using Word and Document Embeddings}, 
 		author={Mueller, Sven and Brunzel, Michael and Kaun, Daniela}, 
 		year={2019}, 
 	}
