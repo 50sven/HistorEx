@@ -19,7 +19,7 @@ All code was written in Python Version 3.6. Requirements are listed in requireme
     pip install -r requirements.txt
     
 1. Doc2Vec
-* produce raw text data (`Doc2Vec_Preprocessing.py`)
+* preprocess text data (`Doc2Vec_Preprocessing.py`)
 * train document and word embeddings (`Doc2Vec_Training.py`)
 * Evaluate embeddings (`Doc2Vec_Evaluation.py`, `WordVector_Evaluation.py`)
 	
