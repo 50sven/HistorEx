@@ -6,7 +6,7 @@ This repository contains a pipeline for training document/word vectors, extracti
 
 	@article{EHTCuWaDE, 
 		title={Exploring Historical Text Corpora Using Word and Document Embeddings}, 
-		author={Müller, Sven and Brunzel, Michael and Kaun, Daniela and Biswas, Russa and Koutraki, Maria and Tietz, Tabea and Sack, Harald}, 
+		author={Müller, Sven and Brunzel, Michael and Kaun, Daniela}, 
 		year={2019}, 
 	}
 
