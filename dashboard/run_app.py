@@ -13,7 +13,7 @@ from components import Header, Table, Scatter, BarOverview, Map, Dropdown, BarSp
 geolocator = Nominatim(user_agent="geolocator")
 
 # Overview
-overview_tsne = pickle.load(open("./assets/data_overview_tsne.pkl", "rb"))
+overview_tsne = pickle.load(open("./assets/data_overview_tsne.pkl", "rb")) #working -- add to other files too "./dashboard/assets/data_overview_tsne.pkl", "rb"
 overview_persons = pickle.load(open("./assets/data_overview_persons_by_tag.pkl", "rb"))
 overview_places = pickle.load(open("./assets/data_overview_places_by_tag.pkl", "rb"))
 # Book
