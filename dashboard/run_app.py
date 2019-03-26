@@ -25,7 +25,7 @@ doc_similarities = pickle.load(open("./assets/data_doc_similarities.pkl", "rb"))
 vocabulary = list(id_mapping.keys())[308:]
 remaining_persons = pickle.load(open('./assets/data_remaining_persons.pkl', 'rb'))
 remaining_places = pickle.load(open('./assets/data_remaining_places.pkl', 'rb'))
-cos_sim_matrix = pd.read_pickle("../data_cosine_similarity_matrix.pkl")
+cos_sim_matrix = pd.read_pickle("./assets/data_cosine_similarity_matrix.pkl")
 
 
 overview = html.Div(id="body1", children=[
@@ -351,4 +351,4 @@ def update_map(value, page):
 
 
 if __name__ == '__main__':
-  app.run_server(debug=True)
+  app.run_server(debug=True, host='0.0.0.0')
