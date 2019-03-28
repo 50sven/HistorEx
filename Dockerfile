@@ -8,10 +8,6 @@ COPY . /app
 
 # install requirements
 RUN pip install -r requirements.txt
-# add user admin - does not start app as root user
-RUN useradd -ms /bin/bash admin
-
-USER admin
 
 EXPOSE 1880
 
