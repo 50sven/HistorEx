@@ -1,6 +1,6 @@
 # "Exploring Historical Text Corpora Using Word and Document Embeddings"
 
-![alt text](https://github.com/50sven/ISE/blob/master/Repository_image.png)
+![alt text](https://github.com/50sven/Exploring-Historical-Text-Corpora-Using-Word-and-Document-Embeddings/blob/master/Repository_image.png)
 
 This repository contains a pipeline for training document/word vectors, extracting/linking named entities and an interactive visualization tool to explore the findings. 
 
@@ -14,7 +14,7 @@ This repository contains a pipeline for training document/word vectors, extracti
 ## Getting started
 All code was written in Python Version 3.6. Requirements are listed in requirements.txt. To get started use:
 
-	git clone https://github.com/50sven/ISE
+	git clone https://github.com/50sven/Exploring-Historical-Text-Corpora-Using-Word-and-Document-Embeddings.git
     cd ISE
     pip install -r requirements.txt
     
